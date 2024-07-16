@@ -86,7 +86,7 @@
     <dependency>
       <groupId>com.azure</groupId>
       <artifactId>azure-core</artifactId>
-      <version>1.45.1</version> <!-- {x-version-update;jca_com.azure:azure-core;dependency} -->
+      <version>1.45.1</version> <!-- {x-version-update;jca.com.azure:azure-core;dependency} -->
       <scope>test</scope>
     </dependency>
     <!-- JUnit -->
