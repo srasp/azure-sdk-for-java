@@ -472,8 +472,8 @@ io.clientcore:core-json;1.0.0-beta.1;1.0.0-beta.1
 io.clientcore:http-jdk-httpclient;1.0.0-beta.1;1.0.0-beta.1
 io.clientcore:http-okhttp3;1.0.0-beta.1;1.0.0-beta.1
 io.clientcore:http-stress;1.0.0-beta.1;1.0.0-beta.1
-jca.com.azure:azure-core;1.45.1
-jca.com.azure:azure-core-test;1.22.1
+jca.com.azure:azure-core;1.45.1;1.45.1
+jca.com.azure:azure-core-test;1.22.1;1.22.1
 
 # Unreleased dependencies: Copy the entry from above, prepend "unreleased_" and remove the current
 # version. Unreleased dependencies are only valid for dependency versions.
@@ -484,7 +484,6 @@ jca.com.azure:azure-core-test;1.22.1
 # <!-- {x-version-update;unreleased_com.azure:azure-core;dependency} -->
 unreleased_com.azure:azure-core;1.50.0
 
-
 # Released Beta dependencies: Copy the entry from above, prepend "beta_", remove the current
 # version and set the version to the released beta. Released beta dependencies are only valid
 # for dependency versions. These entries are specifically for when we've released a beta for
@@ -493,5 +492,3 @@ unreleased_com.azure:azure-core;1.50.0
 # beta_<groupId>:<artifactId>;dependency-version
 # note: Released beta versions will not be manipulated with the automatic PR creation code.
 beta_com.azure:azure-identity;1.13.0-beta.2
-
-
