@@ -1,0 +1,4 @@
+directory: specification/keyvault/data-plane/TypeSpec
+commit: a325c2bc1856046d752b24d0feb64d17bc091cfd
+repo: Azure/azure-rest-api-specs
+cleanup: true
