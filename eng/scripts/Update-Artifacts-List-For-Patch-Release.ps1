@@ -90,8 +90,14 @@ UpdateDependencies -ArtifactInfos $ArtifactInfos
 $AllDependenciesWithVersion = CreateForwardLookingVersions -ArtifactInfos $ArtifactInfos
 
 FindAllArtifactsThatNeedPatching -ArtifactInfos $ArtifactInfos -AllDependenciesWithVersion $AllDependenciesWithVersion
+Write-Host "Find All Artifacts That Need Patching: $($AllDependenciesWithVersion.Count)"
+# print out the artifacts that need patching
+foreach ($artifact in $AllDependenciesWithVersion.Keys) {
+    Write-Host "$($artifact): $($AllDependenciesWithVersion[$artifact])"
+}
 
 $ArtifactsToPatch = $ArtifactInfos.Keys | Where-Object { $null -ne $ArtifactInfos[$_].FutureReleasePatchVersion } | ForEach-Object { $ArtifactInfos[$_].ArtifactId }
+Write-Host "Artifacts to patch: $($ArtifactsToPatch)"
 
 Write-Host "Searching for libraries in dictionaries:"
 

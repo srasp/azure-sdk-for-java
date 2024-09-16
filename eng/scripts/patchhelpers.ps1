@@ -112,6 +112,9 @@ function CreateForwardLookingVersions($ArtifactInfos) {
             else {
                 $orderedVersions = @($depVersion, $currentVersion) | ForEach-Object { [AzureEngSemanticVersion]::ParseVersionString($_) }
                 $sortedVersions = [AzureEngSemanticVersion]::SortVersions($orderedVersions)
+                Write-Host "ordered versions: $($orderedVersions)"
+                Write-Host "sorted versions: $($sortedVersions)"
+
                 if($null -eq $sortedVersions) {
                     # We currently have a bug where semantic version may have 4 values just like jackson-databind.
                     $latestVersion = $depVersion
@@ -119,7 +122,7 @@ function CreateForwardLookingVersions($ArtifactInfos) {
                     $latestVersion = $sortedVersions[0].RawVersion
                 }
             }
-
+            Write-Host "Latest version: $latestVersion with $depId"
             $allDependenciesWithVersion[$depId] = $latestVersion
         }
     }
@@ -131,14 +134,19 @@ function CreateForwardLookingVersions($ArtifactInfos) {
 function FindAllArtifactsThatNeedPatching($ArtifactInfos, $AllDependenciesWithVersion) {
     foreach($arId in $ArtifactInfos.Keys) {
         $arInfo = $ArtifactInfos[$arId]
+        #print $arInfo
+        Write-Host "Artifact: $arInfo"
+
         if($arInfo.GroupId -ne 'com.azure') {
             continue;
         }
 
         foreach($depId in $arInfo.Dependencies.Keys) {
+            Write-Host "Dependency: $depId"
             $depVersion = $arInfo.Dependencies[$depId]
-
             if($depVersion -ne $AllDependenciesWithVersion[$depId]) {
+                Write-Host "Artifacts to patch: $depVersion"
+
                 $currentGAOrPatchVersion = $arInfo.LatestGAOrPatchVersion
                 $newPatchVersion = GetPatchVersion -ReleaseVersion $currentGAOrPatchVersion
                 $arInfo.FutureReleasePatchVersion = $newPatchVersion
