@@ -79,12 +79,14 @@ Write-Host "Loading libraries from text file."
 
 foreach ($line in Get-Content "${PSScriptRoot}/../pipelines/patch_release_client.txt") {
     if (($line) -and !($line.StartsWith("#"))) {
+        Write-Host "Processing $line"
         $libraryId = $line.split(" ")[0]
         $groupId, $artifactId = $libraryId.split(":")
         $ArtifactInfos[$artifactId] = GetVersionInfoForMavenArtifact -ArtifactId $artifactId
     }
 }
 
+Write-Host "Updating dependencies for libraries. Size of ArtifactInfos=$($ArtifactInfos.Count)" 
 UpdateDependencies -ArtifactInfos $ArtifactInfos
 
 $AllDependenciesWithVersion = CreateForwardLookingVersions -ArtifactInfos $ArtifactInfos
