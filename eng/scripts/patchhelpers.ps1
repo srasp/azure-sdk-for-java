@@ -69,8 +69,11 @@ function GetVersionInfoForMavenArtifact($ArtifactId) {
 function UpdateDependencies($ArtifactInfos) {
     foreach ($artifactId in $ArtifactInfos.Keys) {
         $deps = @{}
-        $sdkVersion = $ArtifactInfos[$artifactId].LatestGAOrPatchVersion
-        $pomFileUri = "https://repo1.maven.org/maven2/com/azure/$artifactId/$sdkVersion/$artifactId-$sdkVersion.pom"
+
+        $latestStableVersion = GetLatestStableVersionFromMavenRepo -GroupId "com.azure" -ArtifactId $artifactId
+        Write-Host "Latest stable version of $($artifactId): $($latestStableVersion)"
+
+        $pomFileUri = "https://repo1.maven.org/maven2/com/azure/$artifactId/$latestStableVersion/$artifactId-$latestStableVersion.pom"
         $webResponseObj = Invoke-WebRequest -Uri $pomFileUri
         $dependencies = ([xml]$webResponseObj.Content).project.dependencies.dependency | Where-Object { (([String]::IsNullOrWhiteSpace($_.scope)) -or ($_.scope -eq 'compile')) }
         $dependencies | ForEach-Object { $deps[$_.artifactId] = $_.version }
@@ -78,6 +81,30 @@ function UpdateDependencies($ArtifactInfos) {
     }
 
     return
+}
+
+# Get the latest stable version for the artifact.
+function GetLatestStableVersionFromMavenRepo($GroupId, $ArtifactId) {
+    $groupPath = $GroupId -replace '\.', '/'
+    $metadataUrl = "https://repo1.maven.org/maven2/$groupPath/$ArtifactId/maven-metadata.xml"
+    Write-Host "Fetching metadata from $metadataUrl"
+    $webResponse = Invoke-WebRequest -Uri $metadataUrl
+    $metadataXml = [xml]$webResponse.Content
+    $versions = $metadataXml.metadata.versioning.versions.version
+
+    # Filter out beta versions
+    $stableVersions = $versions | Where-Object { $_ -notmatch 'beta' -and $_ -notmatch 'preview' }
+
+    # Sort versions to find the latest stable version
+    $sortedVersions = $stableVersions | Sort-Object { [System.Version]::Parse($_) } -Descending
+    if ($sortedVersions -and $sortedVersions.Count -gt 0) {
+        $latestStableVersion = $sortedVersions[0]
+    } else {
+        Write-Host "No stable versions found for $ArtifactId"
+        $latestStableVersion = $null
+    }
+
+    return $latestStableVersion
 }
 
 # Update CII information for the artifacts.
