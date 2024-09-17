@@ -110,7 +110,6 @@ public class Utils {
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
         objectMapper.configure(JsonParser.Feature.ALLOW_SINGLE_QUOTES, true);
-        objectMapper.configure(JsonParser.Feature.ALLOW_TRAILING_COMMA, true);
         if (!allowDuplicateProperties) {
             objectMapper.configure(JsonParser.Feature.STRICT_DUPLICATE_DETECTION, true);
         }
